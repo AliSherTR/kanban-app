@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -21,40 +22,64 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { loginSchema } from "../schema";
+import { signUpSchema } from "@/features/auth/schema";
 import Link from "next/link";
+import { useAuth } from "../api/useAuth";
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type SignUpFormValues = z.infer<typeof signUpSchema>;
 
-export function LoginForm({
+export function SignUpForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const { signup, signUpSuccess, signUpPending } = useAuth();
+  const form = useForm<SignUpFormValues>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
+      username: "",
       email: "",
       password: "",
     },
   });
 
-  // Handle form submission
-  const onSubmit = async (data: LoginFormValues) => {
-    console.log(data);
+  const onSubmit = async (data: SignUpFormValues) => {
+    signup(data);
+
+    if (signUpSuccess) {
+      form.reset();
+    }
   };
 
   return (
     <div className={cn("flex flex-col gap-6 w-[90%]", className)} {...props}>
       <Card className="shadow-none rounded-none border-none">
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Create your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your details below to create a new account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="username"
+                        type="text"
+                        placeholder="johndoe"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -78,39 +103,49 @@ export function LoginForm({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center">
-                      <FormLabel htmlFor="password">Password</FormLabel>
-                      <a
-                        href="#"
-                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                      >
-                        Forgot your password?
-                      </a>
-                    </div>
+                    <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input id="password" type="password" {...field} />
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="********"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Login
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={signUpPending}
+                >
+                  Sign Up
                 </Button>
                 <Button variant="outline" className="w-full">
-                  Login with Google
+                  Sign Up with Google
                 </Button>
               </div>
             </form>
           </Form>
           <div className="mt-4 text-center text-sm">
-            Don't have an account?{" "}
-            <Link href="/auth/signup" className="underline underline-offset-4">
-              Sign up
+            Already have an account?{" "}
+            <Link href="/auth/login" className="underline underline-offset-4">
+              Login
             </Link>
           </div>
         </CardContent>
+
+        <CardFooter>
+          {signUpSuccess && (
+            <p className=" text-green-800 text-lg font-medium text-center">
+              Your Account has been created successfully now you can Login with
+              your credentials
+            </p>
+          )}
+        </CardFooter>
       </Card>
     </div>
   );
