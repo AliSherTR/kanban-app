@@ -9,11 +9,12 @@ import {
 } from "@/components/ui/sidebar";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { LayoutDashboard, Moon, Plus, Sun } from "lucide-react";
+import { LayoutDashboard, LogOut, Moon, Plus, Sun } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import CreateBoardModal from "@/features/task-board/components/create-board-modal";
+import { Button } from "./ui/button";
 
 const sidebarItems = [
   { id: 0, name: "Platform Launch" },
@@ -90,24 +91,34 @@ export default function AppSidebar() {
         </SidebarMenuItem>
       </SidebarContent>
 
-      <SidebarFooter className="w-[90%] mx-auto p-3 bg-[#f4f7fd] dark:bg-[#20212c] rounded-lg mb-10 flex flex-row items-center justify-center gap-4">
-        <Moon
-          size={18}
-          className={`transition-colors duration-200 ${
-            !isDark ? "text-[#828fa3]" : "text-white"
-          }`}
-        />
-        <Switch
-          checked={!isDark}
-          onCheckedChange={handleThemeChange}
-          className="data-[state=checked]:bg-[#635fc7] transition-transform duration-500 ease-in-out"
-        />
-        <Sun
-          size={18}
-          className={`transition-colors duration-200 ${
-            isDark ? "text-[#828fa3]" : "text-yellow-500"
-          }`}
-        />
+      <SidebarFooter className="w-[90%] mx-auto p-3  ">
+        <div className="flex flex-row items-center justify-center gap-4 bg-[#f4f7fd] dark:bg-[#20212c] rounded-lg mb-10 p-3">
+          <Moon
+            size={18}
+            className={`transition-colors duration-200 ${
+              !isDark ? "text-[#828fa3]" : "text-white"
+            }`}
+          />
+          <Switch
+            checked={!isDark}
+            onCheckedChange={handleThemeChange}
+            className="data-[state=checked]:bg-[#635fc7] transition-transform duration-500 ease-in-out"
+          />
+          <Sun
+            size={18}
+            className={`transition-colors duration-200 ${
+              isDark ? "text-[#828fa3]" : "text-yellow-500"
+            }`}
+          />
+        </div>
+
+        <Button
+          variant={"outline"}
+          className="mb-10 flex items-center justify-start border-none shadow-none"
+        >
+          <LogOut />
+          Logout
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );

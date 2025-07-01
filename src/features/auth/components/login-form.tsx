@@ -1,5 +1,4 @@
 "use client";
-
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +22,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { loginSchema } from "../schema";
 import Link from "next/link";
+import { useAuth } from "../api/useAuth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -30,6 +32,9 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const { login, loggingIn, loginSuccess } = useAuth();
+  const router = useRouter();
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -38,9 +43,14 @@ export function LoginForm({
     },
   });
 
-  // Handle form submission
+  useEffect(() => {
+    if (loginSuccess) {
+      router.push("/dashboard");
+    }
+  }, [loginSuccess, router]);
+
   const onSubmit = async (data: LoginFormValues) => {
-    console.log(data);
+    login(data);
   };
 
   return (
@@ -94,9 +104,17 @@ export function LoginForm({
                   </FormItem>
                 )}
               />
+
+              {/* Show login error if exists */}
+              {/* {loginError && (
+                <div className="text-red-500 text-sm text-center">
+                  {loginError}
+                </div>
+              )} */}
+
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Login
+                <Button type="submit" className="w-full" disabled={loggingIn}>
+                  {loggingIn ? "Logging in..." : "Login"}
                 </Button>
                 <Button variant="outline" className="w-full">
                   Login with Google
