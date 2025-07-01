@@ -36,6 +36,33 @@ async function loginUser({ email, password }: loginSchema) {
   throw new Error(data.message);
 }
 
+async function logoutUser() {
+  const res = await fetch("/api/auth/logout", {
+    method: "POST",
+  });
+
+  const data = await res.json();
+  if (data.status === 200) {
+    return data;
+  }
+
+  throw new Error(data.message);
+}
+
+async function forgotPassword({ email }: { email: string }) {
+  const res = await fetch("/api/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+
+  const data = await res.json();
+  if (data.status === 200) {
+    return data;
+  }
+
+  throw new Error(data.message);
+}
+
 export const useAuth = () => {
   const signUpMutation = useMutation({
     mutationFn: signUpUser,
@@ -67,6 +94,36 @@ export const useAuth = () => {
     },
   });
 
+  const logoutMutation = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: (data) => {
+      toast.success(data.message);
+    },
+    onError: (data) => {
+      toast.error(data.message, {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
+    },
+  });
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: forgotPassword,
+    onSuccess: (data) => {
+      toast.success(data.message);
+    },
+    onError: (data) => {
+      toast.error(data.message, {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
+    },
+  });
+
   return {
     signup: signUpMutation.mutate,
     signUpSuccess: signUpMutation.isSuccess,
@@ -75,5 +132,12 @@ export const useAuth = () => {
     login: loginMutation.mutate,
     loggingIn: loginMutation.isPending,
     loginSuccess: loginMutation.isSuccess,
+
+    logout: logoutMutation.mutate,
+    logoutPending: logoutMutation.isPending,
+    logoutSucces: logoutMutation.isSuccess,
+
+    forgotPassword: forgotPasswordMutation.mutate,
+    forgotPasswordPending: forgotPasswordMutation.isPending,
   };
 };

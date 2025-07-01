@@ -26,10 +26,12 @@ export default function AppHeader() {
 
   return (
     <div className="sticky top-0 flex items-center py-5 bg-white dark:bg-[#2b2c37] justify-between px-5">
-      {slug && (
+      {slug ? (
         <span className="text-xl font-semibold">
           {decodeURIComponent(slug as string)}
         </span>
+      ) : (
+        <span className="text-xl font-semibold">Welcome Back</span>
       )}
 
       {slug && (

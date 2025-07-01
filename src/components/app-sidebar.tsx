@@ -11,10 +11,11 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { LayoutDashboard, LogOut, Moon, Plus, Sun } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import CreateBoardModal from "@/features/task-board/components/create-board-modal";
 import { Button } from "./ui/button";
+import { useAuth } from "@/features/auth/api/useAuth";
 
 const sidebarItems = [
   { id: 0, name: "Platform Launch" },
@@ -26,6 +27,8 @@ export default function AppSidebar() {
   const params = useParams();
   const { setTheme, resolvedTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
+  const { logout, logoutPending, logoutSucces } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -35,6 +38,12 @@ export default function AppSidebar() {
   const handleThemeChange = (checked: boolean) => {
     setTheme(checked ? "light" : "dark");
   };
+
+  useEffect(() => {
+    if (logoutSucces) {
+      router.push("/auth/login");
+    }
+  }, [logoutSucces, router]);
 
   if (!isMounted) {
     return null;
@@ -114,6 +123,8 @@ export default function AppSidebar() {
 
         <Button
           variant={"outline"}
+          disabled={logoutPending}
+          onClick={() => logout()}
           className="mb-10 flex items-center justify-start border-none shadow-none"
         >
           <LogOut />
