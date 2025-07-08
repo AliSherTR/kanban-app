@@ -63,6 +63,43 @@ async function forgotPassword({ email }: { email: string }) {
   throw new Error(data.message);
 }
 
+async function verifyPasswordResetToken({ token }: { token: string }) {
+  const res = await fetch("/api/auth/verify-token", {
+    method: "POST",
+    body: JSON.stringify({ token }),
+  });
+
+  const data = await res.json();
+  if (data.status === 200) {
+    return data;
+  }
+
+  throw new Error(data.message);
+}
+
+async function resetPassword({
+  password,
+  confirmPassword,
+  email,
+  token,
+}: {
+  password: string;
+  confirmPassword: string;
+  email: string;
+  token: string;
+}) {
+  const res = await fetch(`/api/auth/reset-password`, {
+    method: "PATCH",
+    body: JSON.stringify({ password, confirmPassword, token, email }),
+  });
+  const data = await res.json();
+  if (data.status === 200) {
+    return data;
+  }
+
+  throw new Error(data.message);
+}
+
 export const useAuth = () => {
   const signUpMutation = useMutation({
     mutationFn: signUpUser,
@@ -124,6 +161,20 @@ export const useAuth = () => {
     },
   });
 
+  const verifyPasswordResetTokenMutation = useMutation({
+    mutationFn: verifyPasswordResetToken,
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: resetPassword,
+    onSuccess: (data) => {
+      toast.success(data.message);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   return {
     signup: signUpMutation.mutate,
     signUpSuccess: signUpMutation.isSuccess,
@@ -139,5 +190,14 @@ export const useAuth = () => {
 
     forgotPassword: forgotPasswordMutation.mutate,
     forgotPasswordPending: forgotPasswordMutation.isPending,
+
+    verifyPasswordResetToken: verifyPasswordResetTokenMutation.mutate,
+    verifyPasswordResetTokenPending: verifyPasswordResetTokenMutation.isPending,
+    verifyPasswordResetTokenSuccess: verifyPasswordResetTokenMutation.isSuccess,
+    verifyPasswordResetTokenError: verifyPasswordResetTokenMutation.error,
+    verifyPasswordResetTokenData: verifyPasswordResetTokenMutation.data,
+
+    resetPassword: resetPasswordMutation.mutate,
+    resetPasswordPending: resetPasswordMutation.isPending,
   };
 };

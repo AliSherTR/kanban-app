@@ -5,11 +5,7 @@ export const loginSchema = z.object({
     .string()
     .min(1, { message: "Email is required" })
     .email({ message: "Please enter a valid email address" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters long" })
-    .regex(/[a-zA-Z]/, { message: "Password must contain at least one letter" })
-    .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+  password: z.string().min(1, { message: "Password is required" }),
 });
 
 export const signUpSchema = z.object({
@@ -36,3 +32,15 @@ export const forgotPasswordSchema = z.object({
     .min(1, { message: "Email is required" })
     .email({ message: "Please enter a valid email address" }),
 });
+
+export const resetPasswordSchema = z
+  .object({
+    password: z.string().min(5, "Password must be at least 5 characters long"),
+    confirmPassword: z
+      .string()
+      .min(5, "Confirm Password must be at least 5 characters long"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
