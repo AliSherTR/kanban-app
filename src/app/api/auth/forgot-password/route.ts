@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
       id: existingUser.id,
     });
 
-    const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
+    const resetUrl = `http://localhost:3000/auth/reset-password?token=${token}`;
 
     const emailHtml = await render(PasswordReset({ resetLink: resetUrl }));
 

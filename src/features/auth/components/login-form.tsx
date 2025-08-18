@@ -55,7 +55,7 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6 w-[90%]", className)} {...props}>
-      <Card className="shadow-none rounded-none border-none">
+      <Card className="shadow-none rounded-none border-none dark:bg-transparent">
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
@@ -115,9 +115,6 @@ export function LoginForm({
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={loggingIn}>
                   {loggingIn ? "Logging in..." : "Login"}
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Login with Google
                 </Button>
               </div>
             </form>

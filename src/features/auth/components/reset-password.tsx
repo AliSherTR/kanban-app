@@ -61,7 +61,6 @@ export default function ResetPasswordPage() {
   });
 
   const onSubmit = (data: z.infer<typeof resetPasswordSchema>) => {
-    console.log(data);
     const dataToSend = {
       password: data.password,
       confirmPassword: data.confirmPassword,
@@ -92,7 +91,6 @@ export default function ResetPasswordPage() {
   }
 
   if (verifyPasswordResetTokenSuccess) {
-    console.log(verifyPasswordResetTokenData.payload.email);
     return (
       <div className="flex flex-col gap-6 w-[90%]">
         <Card className="shadow-none rounded-none border-none">
@@ -171,7 +169,11 @@ export default function ResetPasswordPage() {
                   )}
                 />
                 <div className="flex flex-col gap-3">
-                  <Button type="submit" className="w-full">
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={resetPasswordPending}
+                  >
                     Reset Password
                   </Button>
                 </div>

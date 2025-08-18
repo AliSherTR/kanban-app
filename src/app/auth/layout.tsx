@@ -12,9 +12,9 @@ export default async function layout({
   children: React.ReactElement;
 }) {
   return (
-    <div className="min-h-screen grid grid-cols-2">
-      <div className=" bg-white">
-        <div className=" flex flex-col mt-auto h-full bg-gray-50">
+    <div className="min-h-screen grid grid-cols-2 ">
+      <div className=" bg-white dark:text-white dark:bg-[#20212c]">
+        <div className=" flex flex-col mt-auto h-full dark:border-r-[0.2px] dark:border-white ">
           <div className="px-3 py-4 flex flex-row items-center gap-3">
             <img
               src="https://kanban-task-management-app.netlify.app/static/media/logo-mobile.e60c2fbc3dcefa4256e0569ffba5e523.svg"
@@ -33,7 +33,9 @@ export default async function layout({
           </div>
         </div>
       </div>
-      <div className="self-center">{children}</div>
+      <div className="dark:bg-[#20212c] flex items-center justify-center">
+        {children}
+      </div>
     </div>
   );
 }

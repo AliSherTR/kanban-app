@@ -1,4 +1,6 @@
+"use client";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface signUpSchema {
@@ -101,6 +103,7 @@ async function resetPassword({
 }
 
 export const useAuth = () => {
+  const router = useRouter();
   const signUpMutation = useMutation({
     mutationFn: signUpUser,
     onSuccess: (data) => {
@@ -169,6 +172,7 @@ export const useAuth = () => {
     mutationFn: resetPassword,
     onSuccess: (data) => {
       toast.success(data.message);
+      router.push("/auth/login");
     },
     onError: (error) => {
       toast.error(error.message);
